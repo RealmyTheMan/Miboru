@@ -17,7 +17,7 @@ export async function saveMediaToMachine(
   const diskFile = await create(`_gallery/${id}/item`, {
     baseDir: BaseDirectory.AppData,
   });
-  await diskFile.write(await params.file.bytes());
+  await diskFile.write(new Uint8Array(await params.file.arrayBuffer()));
   await diskFile.close();
 
   await db.execute("INSERT INTO media (id, type, title) VALUES (?, ?, ?)", [
