@@ -43,15 +43,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: Create .env file
-        run: |
-          echo "PUB_API_URL=$PUB_API_URL" >> .env.remote
-          echo "PUB_INSTANCE_ORIGIN=$PUB_INSTANCE_ORIGIN" >> .env.remote
-        env:
-          PUB_API_URL: ${{ vars.PUB_API_URL }}
-          PUB_INSTANCE_ORIGIN: ${{ vars.PUB_INSTANCE_ORIGIN }}
-        working-directory: client
-
       - name: install client dependencies
         run: bun install
         working-directory: client
