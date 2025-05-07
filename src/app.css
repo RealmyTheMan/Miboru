@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+:root {
+  --accent-red: #ff5d89;
+  --accent-pink: #f255f8;
+  --accent-purple: #a37cff;
+  --font-body:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --font-display: "Nunito", var(--font-body);
+  --text-main: hsl(240, 4%, 90%);
+  --text-alt: hsla(240, 4%, 90%, 0.75);
+  --text-dimmed: hsla(240, 4%, 90%, 0.6);
+  --text-on-accent: #000;
+  --bg-main: hsl(240, 4%, 10%);
+  --bg-panel: hsl(240, 4%, 16%);
+  --bg-panel-alt: hsl(240, 4%, 22%);
+  --bg-button: hsl(240, 4%, 28%);
+  --bg-highlight: hsla(240, 4%, 100%, 0.15);
+  --bg-scrollbar: hsl(240, 4%, 36%);
+  --border-main: rgba(255, 255, 255, 0.1);
+  --shadow-main: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.3);
+}
+
+@theme {
+  --color-accent-red: var(--accent-red);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-purple: var(--accent-purple);
+  --font-body: var(--font-body);
+  --font-display: var(--font-display);
+  --text-color-main: var(--text-main);
+  --text-color-alt: var(--text-alt);
+  --text-color-dimmed: var(--text-dimmed);
+  --text-color-on-accent: var(--text-on-accent);
+  --background-color-main: var(--bg-main);
+  --background-color-panel: var(--bg-panel);
+  --background-color-panel-alt: var(--bg-panel-alt);
+  --background-color-button: var(--bg-button);
+  --background-color-highlight: var(--bg-highlight);
+  --border-color-main: var(--border-main);
+  --shadow-main: var(--shadow-main);
+}
+
+html {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  @apply h-full;
+}
+
+body {
+  @apply bg-main text-main font-body break-words select-none;
+}
+
+p {
+  @apply leading-normal;
+}
+
+::-webkit-scrollbar {
+  @apply h-2 w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--bg-scrollbar);
+  @apply rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply opacity-85;
+}
+
+::-webkit-scrollbar-thumb:active {
+  @apply opacity-65;
+}
+
+a {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+h1,
+h2 {
+  @apply font-display font-extrabold;
+}
+
+.gs-icon-button {
+  @apply hover:bg-button flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-lg transition-all active:opacity-65;
+}

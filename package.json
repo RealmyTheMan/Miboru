@@ -1,0 +1,42 @@
+{
+  "name": "miboru",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "format": "prettier --write .",
+    "lint": "prettier --check ."
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^6.0.0",
+    "@sveltejs/kit": "^2.20.7",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@tailwindcss/vite": "^4.1.4",
+    "@tauri-apps/cli": "^2.5.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "svelte": "^5.28.2",
+    "svelte-check": "^4.1.6",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.4"
+  },
+  "dependencies": {
+    "@fontsource/nunito": "^5.2.5",
+    "@iconify-json/material-symbols": "^1.2.20",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@tauri-apps/plugin-fs": "~2.2.1",
+    "@tauri-apps/plugin-sql": "~2.2.0",
+    "@tauri-apps/plugin-store": "~2.2.0",
+    "clsx": "^2.1.1",
+    "unplugin-icons": "^22.1.0"
+  }
+}
