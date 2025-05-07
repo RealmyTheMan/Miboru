@@ -56,8 +56,13 @@
             "bg-button": isDraggingOver,
           },
         )}
-        ondragover={() => (isDraggingOver = true)}
-        ondragleave={() => (isDraggingOver = false)}
+        ondragenter={(e) => {
+          isDraggingOver = true;
+        }}
+        ondragover={(e) => e.preventDefault()}
+        ondragleave={() => {
+          isDraggingOver = false;
+        }}
         ondrop={(e) => {
           isDraggingOver = false;
           onDropFile(e);
