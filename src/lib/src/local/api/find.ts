@@ -44,6 +44,14 @@ export async function findMediaOnMachine(
           },
         ]
       : []),
+    ...(filters.get("type")
+      ? [
+          {
+            whereTemplate: "m.type = ?",
+            value: filters.get("type") as string,
+          },
+        ]
+      : []),
   ];
 
   const filterWhereString = filterList
