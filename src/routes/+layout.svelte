@@ -10,6 +10,16 @@
   let prepDone = $state(false);
 
   onMount(async () => {
+    window.addEventListener(
+      "keydown",
+      (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "p") e.preventDefault();
+      },
+      true,
+    );
+
+    window.addEventListener("drop", (e) => e.preventDefault());
+
     await runPrepare();
     prepDone = true;
   });
