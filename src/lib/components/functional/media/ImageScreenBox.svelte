@@ -40,6 +40,7 @@
     },
   )}
   aria-label="Close maximized image"
+  tabindex={active ? 0 : -1}
   onclick={() => (active = false)}
 >
   <ImageDemo {src} {alt} />
