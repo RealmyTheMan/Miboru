@@ -33,7 +33,9 @@
   );
 
   onMount(() => {
-    if (autofocus) inputElement?.focus();
+    setTimeout(() => {
+      if (autofocus) inputElement?.focus();
+    });
   });
 
   function updateInput(newCharacter?: string) {

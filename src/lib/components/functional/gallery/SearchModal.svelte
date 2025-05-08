@@ -21,7 +21,7 @@
       <TagEditor
         initialValue={keywords}
         placeholder="Enter a tag or filter..."
-        autofocus
+        autofocus={true}
         onenter={(tags) => {
           goto(`/gallery?tags=${JSON.stringify(tags)}`);
           active = false;
