@@ -23,7 +23,7 @@
     class={clsx(
       "hover:bg-button flex min-w-48 cursor-pointer items-center gap-2 rounded-md p-2 transition-all active:opacity-65",
       {
-        "bg-accent-blue": item.active,
+        "bg-accent-select": item.active,
       },
     )}
     role="menuitem"

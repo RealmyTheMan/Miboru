@@ -36,11 +36,11 @@
     class="relative grid h-16 grid-cols-[auto_1fr_auto] items-center justify-between gap-2 px-2"
   >
     <div class="px-2">
-      <h1 class="ls-miboru text-2xl font-semibold">
+      <a class="ls-miboru font-display text-2xl font-semibold" href="/gallery">
         miboru<span class="text-accent-red">!</span><span
           class="text-accent-pink">!</span
         ><span class="text-accent-purple">!</span>
-      </h1>
+      </a>
     </div>
 
     <div class="w-full overflow-hidden">

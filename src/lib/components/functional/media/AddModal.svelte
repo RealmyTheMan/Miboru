@@ -16,7 +16,6 @@
   async function onClickUploader() {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/*";
 
     input.onchange = () => {
       if (!input.files || !input.files[0]) return input.remove();
@@ -73,9 +72,6 @@
 
         <h2 class="mt-4 text-2xl">Drag and Drop or Click to Add</h2>
         <p class="text-alt mt-2 text-sm">
-          Only images are supported (for now).
-        </p>
-        <p class="text-alt mt-2 text-sm font-semibold">
           Any media you add will be <i>copied</i> into a different location, which
           will therefore use your storage.
         </p>

@@ -9,6 +9,8 @@ export const dbInit: MigrationFunction = async (db, store) => {
   await db.execute(`CREATE TABLE media (
     id TEXT PRIMARY KEY,
     type TEXT NOT NULL,
+    extension TEXT,
+    size INTEGER DEFAULT 0,
     title TEXT,
     createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
   );`);

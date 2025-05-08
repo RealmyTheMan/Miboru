@@ -1,9 +1,11 @@
 export interface MediaItem {
   id: string;
   type: string;
+  extension: string;
+  size: number;
   title: string | null;
   src: string;
-  thumbnailSrc: string;
+  thumbnailSrc: string | null;
   tags: string[] | null;
   createdAt: Date;
 }

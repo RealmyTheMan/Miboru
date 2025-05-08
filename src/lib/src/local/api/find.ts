@@ -2,11 +2,14 @@ import type { MediaFindParams, MediaFindResponse } from "$lib/src/api/find";
 import type { MediaItem } from "$lib/types/Media";
 import { openDb } from "$lib/src/local/imports/db";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { appDataDir } from "@tauri-apps/api/path";
+import { appDataDir, BaseDirectory } from "@tauri-apps/api/path";
+import { exists } from "@tauri-apps/plugin-fs";
 
 type DbFile = {
   id: string;
   type: string;
+  extension: string;
+  size: number;
   title: string | null;
   createdAt: string;
 };
@@ -74,21 +77,25 @@ export async function findMediaOnMachine(
   }
 
   const appDataPath = await appDataDir();
-  const mediaItems: MediaItem[] = items.map((i) => {
-    const src = convertFileSrc(`${appDataPath}/_gallery/${i.id}/item`);
-    return {
-      id: i.id,
-      type: i.type,
-      title: i.title,
+  const mediaItems: MediaItem[] = [];
+  for (const item of items) {
+    const src = convertFileSrc(`${appDataPath}/_gallery/${item.id}/item`);
+    const thumbnail = (await exists(`_gallery/${item.id}/thumbnail.jpg`, {
+      baseDir: BaseDirectory.AppData,
+    }))
+      ? convertFileSrc(`${appDataPath}/_gallery/${item.id}/thumbnail.jpg`)
+      : null;
+    mediaItems.push({
+      id: item.id,
+      type: item.type,
+      extension: item.extension,
+      size: item.size,
+      title: item.title,
       src,
-      thumbnailSrc: src,
-      tags: [],
-      createdAt: new Date(i.createdAt),
-    };
-  });
-
-  for (const i in mediaItems) {
-    mediaItems[i].tags = await getMediaTags(mediaItems[i].id);
+      thumbnailSrc: item.type.startsWith("image/") ? src : thumbnail || null,
+      tags: await getMediaTags(item.id),
+      createdAt: new Date(item.createdAt),
+    });
   }
 
   return { items: mediaItems };

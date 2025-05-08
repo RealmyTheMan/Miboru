@@ -1,7 +1,10 @@
-import { BaseDirectory, create, mkdir } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, create, mkdir, writeFile } from "@tauri-apps/plugin-fs";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { mkid } from "$lib/src/local/imports/mkid";
 import { openDb } from "$lib/src/local/imports/db";
 import type { MediaSaveParams, MediaSaveResponse } from "$lib/src/api/add";
+import { getVideoThumbnail } from "$lib/util/getVideoThumbnail";
+import { appDataDir } from "@tauri-apps/api/path";
 
 export async function saveMediaToMachine(
   params: MediaSaveParams,
@@ -14,17 +17,39 @@ export async function saveMediaToMachine(
     baseDir: BaseDirectory.AppData,
     recursive: true,
   });
-  const diskFile = await create(`_gallery/${id}/item`, {
+
+  const bytes = new Uint8Array(await params.file.arrayBuffer());
+
+  await writeFile(`_gallery/${id}/item`, bytes, {
     baseDir: BaseDirectory.AppData,
   });
-  await diskFile.write(new Uint8Array(await params.file.arrayBuffer()));
-  await diskFile.close();
 
-  await db.execute("INSERT INTO media (id, type, title) VALUES (?, ?, ?)", [
-    id,
-    params.file.type,
-    params.automaticTitle,
-  ]);
+  if (params.file.type.startsWith("video/")) {
+    const appDataPath = await appDataDir();
+    const thumbnailBlob = await getVideoThumbnail(
+      convertFileSrc(`${appDataPath}/_gallery/${id}/item`),
+    );
+    if (thumbnailBlob) {
+      const thumbnailBytes = new Uint8Array(await thumbnailBlob.arrayBuffer());
+      await writeFile(`_gallery/${id}/thumbnail.jpg`, thumbnailBytes, {
+        baseDir: BaseDirectory.AppData,
+      });
+    }
+  }
+
+  await db.execute(
+    "INSERT INTO media (id, type, extension, size, title) VALUES (?, ?, ?, ?, ?)",
+    [
+      id,
+      params.file.type,
+      params.automaticTitle?.includes(".")
+        ? params.automaticTitle.split(".").splice(-1)[0].trim().toLowerCase() ||
+          null
+        : null,
+      params.file.size,
+      params.automaticTitle,
+    ],
+  );
 
   return { id };
 }

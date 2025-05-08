@@ -12,6 +12,8 @@
   import MoreIcon from "~icons/material-symbols/more-vert";
   import DeleteIcon from "~icons/material-symbols/delete-rounded";
   import ConfirmationModal from "$lib/components/adaptable/ConfirmationModal.svelte";
+  import ImageScreenBox from "./ImageScreenBox.svelte";
+  import MediaPreview from "./MediaPreview.svelte";
 
   interface Props {
     mediaItem: MediaItem | null;
@@ -27,13 +29,8 @@
     ondelete = () => null,
   }: Props = $props();
 
-  let maximizeActive = $state(false);
   let deleteConfirmationActive = $state(false);
   let mediaItemMenuCoords: [number, number] | null = $state(null);
-
-  $effect(() => {
-    if (active === false) maximizeActive = false;
-  });
 
   let timeout: number | null = null;
 
@@ -59,22 +56,6 @@
   }
 </script>
 
-{#if mediaItem && active}
-  <button
-    class={clsx(
-      "bg-panel fixed top-0 left-0 z-200 h-full w-full cursor-zoom-out transition-all duration-300",
-      {
-        "pointer-events-auto opacity-100": maximizeActive,
-        "pointer-events-none scale-90 opacity-0": !maximizeActive,
-      },
-    )}
-    aria-label="Close maximized image"
-    onclick={() => (maximizeActive = false)}
-  >
-    <ImageDemo src={mediaItem.src} alt={mediaItem.title || "Untitled image"} />
-  </button>
-{/if}
-
 <!-- Media item actions menu -->
 <FloatBox bind:coordinates={mediaItemMenuCoords}>
   <ContextMenu
@@ -97,27 +78,12 @@
 />
 
 <!-- The modal -->
-<Modal
-  bind:active
-  onescape={() => {
-    if (maximizeActive) maximizeActive = false;
-    else active = false;
-  }}
->
+<Modal bind:active>
   {#if mediaItem}
     <div class="">
-      <button
-        class="h-[60vh] w-full cursor-zoom-in"
-        aria-label="Maximize image"
-        onclick={() => (maximizeActive = true)}
-      >
-        {#if mediaItem.type.startsWith("image/")}
-          <ImageDemo
-            src={mediaItem.src}
-            alt={mediaItem.title || "Untitled image"}
-          />
-        {/if}
-      </button>
+      <div class="h-[60vh]">
+        <MediaPreview item={mediaItem} />
+      </div>
 
       <div class="p-5">
         <div class="grid grid-cols-[1fr_auto] items-center gap-2">
@@ -151,10 +117,13 @@
           </button>
         </div>
 
-        <div class="text-dimmed mt-2 flex flex-wrap gap-5">
+        <div class="text-dimmed mt-2 flex flex-wrap gap-2">
           <p><b>ID</b>: <span class="select-text">{mediaItem.id}</span></p>
           <p>
             <b>MIME type</b>: <span class="select-text">{mediaItem.type}</span>
+          </p>
+          <p>
+            <b>Size</b>: <span class="select-text">{mediaItem.size}</span>
           </p>
         </div>
       </div>

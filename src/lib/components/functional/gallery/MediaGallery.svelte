@@ -10,6 +10,7 @@
   import BackIcon from "~icons/material-symbols/arrow-left-alt-rounded";
   import ForwardIcon from "~icons/material-symbols/arrow-right-alt-rounded";
   import clsx from "clsx";
+  import GalleryThumbnail from "./GalleryThumbnail.svelte";
 
   interface Props {
     keywords: string[];
@@ -97,7 +98,7 @@
         aria-label="View media item"
         onclick={() => openMediaItem(mediaItem)}
       >
-        <ImageDemo src={mediaItem.thumbnailSrc} />
+        <GalleryThumbnail item={mediaItem} />
       </button>
     {/each}
   </div>

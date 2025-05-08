@@ -33,10 +33,13 @@
     "@iconify-json/material-symbols": "^1.2.20",
     "@paralleldrive/cuid2": "^2.2.2",
     "@sveltejs/adapter-static": "^3.0.8",
+    "@tauri-apps/plugin-dialog": "~2",
     "@tauri-apps/plugin-fs": "~2.2.1",
+    "@tauri-apps/plugin-opener": "~2",
     "@tauri-apps/plugin-sql": "~2.2.0",
     "@tauri-apps/plugin-store": "~2.2.0",
     "clsx": "^2.1.1",
-    "unplugin-icons": "^22.1.0"
+    "unplugin-icons": "^22.1.0",
+    "vidstack": "^1.12.13"
   }
 }
