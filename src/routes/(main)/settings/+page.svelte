@@ -3,6 +3,7 @@
   <p class="mt-2">
     ¿desearías aportar en añadirlos mediante <a
       href="https://github.com/RealmyTheMan/Miboru"
+      target="_blank"
       class="text-accent-red font-semibold hover:underline">github</a
     >? 🥺
   </p>
