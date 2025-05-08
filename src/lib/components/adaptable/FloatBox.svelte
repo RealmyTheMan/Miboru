@@ -1,8 +1,7 @@
 <script lang="ts">
   import { windowState } from "$lib/data/state/windowState.svelte";
   import { trapFocus } from "$lib/util/trapFocus";
-  import { onDestroy, onMount, type Snippet } from "svelte";
-  import { stopPropagation } from "svelte/legacy";
+  import { onDestroy, type Snippet } from "svelte";
 
   interface Props {
     coordinates: [number, number] | null;
@@ -57,12 +56,12 @@
 
   function onFloatBoxActive() {
     floatBoxRef?.focus();
-    window.addEventListener("click", clickListener, true);
+    window.addEventListener("mousedown", clickListener, true);
     window.addEventListener("keydown", keyDownListener, true);
   }
 
   function onFloatBoxInactive() {
-    window.removeEventListener("click", clickListener, true);
+    window.removeEventListener("mousedown", clickListener, true);
     window.removeEventListener("keydown", keyDownListener, true);
   }
 </script>

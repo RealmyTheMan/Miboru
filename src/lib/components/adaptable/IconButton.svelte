@@ -6,7 +6,7 @@
     icon: Component;
     label: string;
     loading?: boolean;
-    onclick?: () => void;
+    onclick?: (e: MouseEvent) => void;
     href?: string;
   }
 
@@ -15,7 +15,7 @@
 
 {#snippet button()}
   <button
-    class={"bg-button flex h-12 w-[inherit] cursor-pointer items-center justify-center rounded-full px-5 transition-all hover:opacity-85 active:opacity-65"}
+    class={"bg-button flex h-12 w-12 cursor-pointer items-center justify-center rounded-full transition-all hover:opacity-85 active:opacity-65"}
     {onclick}
   >
     {#if loading}
@@ -24,7 +24,6 @@
       <div class="text-xl">
         <Icon />
       </div>
-      <span class="ml-2 font-semibold">{label}</span>
     {/if}
   </button>
 {/snippet}

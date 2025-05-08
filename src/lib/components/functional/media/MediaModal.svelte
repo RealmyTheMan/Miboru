@@ -85,7 +85,7 @@
         onclick: () => (deleteConfirmationActive = true),
       },
     ]}
-    bind:coordinates={mediaItemMenuCoords}
+    onclose={() => (mediaItemMenuCoords = null)}
   />
 </FloatBox>
 

@@ -1,16 +1,19 @@
 <script lang="ts">
-  import { page } from "$app/state";
   import Button from "$lib/components/adaptable/Button.svelte";
-  import MenuButton from "$lib/components/adaptable/MenuButton.svelte";
   import AddModal from "$lib/components/functional/media/AddModal.svelte";
-  import GalleryIcon from "~icons/material-symbols/image-rounded";
-  import SettingsIcon from "~icons/material-symbols/settings-rounded";
-  import UploadIcon from "~icons/material-symbols/upload-file-rounded";
-  import SearchIcon from "~icons/material-symbols/search-rounded";
-  import SearchModal from "../gallery/SearchModal.svelte";
+  import SearchModal from "$lib/components/functional/gallery/SearchModal.svelte";
   import clsx from "clsx";
   import { deriveTags } from "$lib/data/state/tags.svelte";
   import SyncToastOverlay from "./SyncToastOverlay.svelte";
+  import IconButton from "$lib/components/adaptable/IconButton.svelte";
+  import GalleryIcon from "~icons/material-symbols/gallery-thumbnail-rounded";
+  import SettingsIcon from "~icons/material-symbols/settings-rounded";
+  import UploadIcon from "~icons/material-symbols/upload-file-rounded";
+  import SearchIcon from "~icons/material-symbols/search-rounded";
+  import MenuIcon from "~icons/material-symbols/menu-rounded";
+  import ContextMenu from "$lib/components/adaptable/ContextMenu.svelte";
+  import ExpandBox from "$lib/components/adaptable/ExpandBox.svelte";
+  import { page } from "$app/state";
 
   let { children } = $props();
 
@@ -18,6 +21,8 @@
   let searchModalActive = $state(false);
 
   let keywords = $derived.by(deriveTags);
+
+  let mainMenuActive = $state(false);
 </script>
 
 <AddModal bind:active={addModalActive} />
@@ -25,9 +30,10 @@
 
 <SyncToastOverlay />
 
+<!-- Main layout content -->
 <div class="grid h-full w-full grid-rows-[auto_1fr] overflow-hidden">
   <header
-    class="border-b-main relative grid h-16 grid-cols-[auto_1fr_auto] items-center justify-between gap-2 border-b px-2"
+    class="relative grid h-16 grid-cols-[auto_1fr_auto] items-center justify-between gap-2 px-2"
   >
     <div class="px-2">
       <h1 class="ls-miboru text-2xl font-semibold">
@@ -66,36 +72,45 @@
       </button>
     </div>
 
-    <div class="">
+    <div class="flex gap-2">
       <Button
         icon={UploadIcon}
         label="Add Media"
         onclick={() => (addModalActive = true)}
       />
+
+      <div class="relative">
+        <IconButton
+          icon={MenuIcon}
+          label="Open Main Menu"
+          onclick={(e) => {
+            if (!mainMenuActive) mainMenuActive = true;
+          }}
+        />
+        <ExpandBox bind:active={mainMenuActive} class="top-14 right-0">
+          <ContextMenu
+            items={[
+              {
+                icon: GalleryIcon,
+                label: "Gallery",
+                active: page.url.pathname === "/gallery",
+                href: "/gallery",
+              },
+              {
+                icon: SettingsIcon,
+                label: "Settings",
+                active: page.url.pathname === "/settings",
+                href: "/settings",
+              },
+            ]}
+            onclose={() => (mainMenuActive = false)}
+          />
+        </ExpandBox>
+      </div>
     </div>
   </header>
 
-  <div class="grid h-full grid-cols-[auto_1fr] overflow-hidden">
-    <div class="border-r-main flex w-48 flex-col justify-between border-r py-4">
-      <div class="">
-        <MenuButton
-          icon={GalleryIcon}
-          label="Gallery"
-          active={page.url.pathname === "/gallery"}
-          href="/gallery"
-        />
-
-        <MenuButton
-          icon={SettingsIcon}
-          label="Settings"
-          active={page.url.pathname === "/settings"}
-          href="/settings"
-        />
-      </div>
-    </div>
-
-    <div class="h-full overflow-auto">
-      {@render children()}
-    </div>
+  <div class="h-full overflow-auto">
+    {@render children()}
   </div>
 </div>

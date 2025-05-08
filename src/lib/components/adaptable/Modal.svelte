@@ -80,7 +80,7 @@
   onclick={() => (active = false)}
   use:trapFocus
 >
-  {#if showClose}
+  {#if showClose && renderChildren}
     <div
       class="border-b-main absolute top-0 left-0 z-110 flex h-14 w-full items-center justify-end border-b p-3 sm:pointer-events-none sm:border-b-0"
     >
