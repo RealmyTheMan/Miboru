@@ -4,12 +4,9 @@
   import type { MediaItem } from "$lib/types/Media";
   import ImageDemo from "$lib/components/adaptable/ImageDemo.svelte";
   import ImageScreenBox from "./ImageScreenBox.svelte";
-  import { save } from "@tauri-apps/plugin-dialog";
-  import { openPath } from "@tauri-apps/plugin-opener";
-  import { appDataDir } from "@tauri-apps/api/path";
   import Button from "$lib/components/adaptable/Button.svelte";
   import SaveFileIcon from "~icons/material-symbols/sim-card-download-rounded";
-  import { copyFile } from "@tauri-apps/plugin-fs";
+  import { saveMediaItem } from "$lib/src/local/util/saveMediaItem";
 
   interface Props {
     item: MediaItem;
@@ -21,24 +18,6 @@
 
   let type = $derived(item.type.split("/")[0] || null);
   let alt = $derived(item.title || "Untitled media");
-
-  async function saveFile() {
-    const appDataPath = await appDataDir();
-
-    const path = await save({
-      filters: [
-        {
-          name: alt,
-          extensions: [item.extension],
-        },
-      ],
-    });
-
-    if (path) {
-      await copyFile(`${appDataPath}/_gallery/${item.id}/item`, path);
-      await openPath(path);
-    }
-  }
 </script>
 
 <ImageScreenBox src={item.src} {alt} bind:active={imageScreenBoxActive} />
@@ -71,8 +50,8 @@
         <div class="mt-4">
           <Button
             icon={SaveFileIcon}
-            label="Save File"
-            onclick={() => saveFile()}
+            label="Save Copy"
+            onclick={() => saveMediaItem(item)}
           />
         </div>
       {/if}

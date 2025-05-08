@@ -19,20 +19,30 @@ export async function findMediaOnMachine(
 ): Promise<MediaFindResponse> {
   const db = await openDb();
 
-  const processedKeywords = params.keywords.map((i) => i.replaceAll("_", " "));
-  const tags = processedKeywords.filter((i) => !i.includes(":"));
-  const filters = processedKeywords.filter((i) => i.includes(":"));
+  const tags = params.keywords.filter((i) => !i.includes(":"));
+  const filters: Map<string, string> = new Map(
+    params.keywords
+      .filter((i) => i.includes(":"))
+      .map((i) => i.split(":").slice(0, 2) as [string, string]),
+  );
 
-  const order = filters.includes("order:date asc")
-    ? "createdAt ASC"
-    : "createdAt DESC";
-
-  const idFilter = filters.find((i) => i.startsWith("id:"));
+  const order =
+    filters.get("order")?.replaceAll(" ", "_") === "date_asc"
+      ? "createdAt ASC"
+      : "createdAt DESC";
 
   const filterList: { whereTemplate: string; value: string | null }[] = [
     { whereTemplate: "1 = 1", value: null },
-    ...(idFilter
-      ? [{ whereTemplate: "m.id = ?", value: idFilter.split("id:")[1].trim() }]
+    ...(filters.get("id")
+      ? [{ whereTemplate: "m.id = ?", value: filters.get("id") as string }]
+      : []),
+    ...(filters.get("title")
+      ? [
+          {
+            whereTemplate: "m.title = ?",
+            value: filters.get("title") as string,
+          },
+        ]
       : []),
   ];
 

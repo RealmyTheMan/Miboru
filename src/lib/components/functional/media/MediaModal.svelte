@@ -1,19 +1,18 @@
 <script lang="ts">
   import Modal from "$lib/components/adaptable/Modal.svelte";
   import type { MediaItem } from "$lib/types/Media";
-  import ImageDemo from "$lib/components/adaptable/ImageDemo.svelte";
-  import clsx from "clsx";
   import TagEditor from "$lib/components/adaptable/TagEditor.svelte";
   import { addToSyncQueue } from "$lib/data/store/sync";
   import { editMedia, type MediaEditResponse } from "$lib/src/api/edit";
   import FloatBox from "$lib/components/adaptable/FloatBox.svelte";
   import ContextMenu from "$lib/components/adaptable/ContextMenu.svelte";
   import { deleteMedia } from "$lib/src/api/delete";
+  import ConfirmationModal from "$lib/components/adaptable/ConfirmationModal.svelte";
+  import MediaPreview from "$lib/components/functional/media/MediaPreview.svelte";
   import MoreIcon from "~icons/material-symbols/more-vert";
   import DeleteIcon from "~icons/material-symbols/delete-rounded";
-  import ConfirmationModal from "$lib/components/adaptable/ConfirmationModal.svelte";
-  import ImageScreenBox from "./ImageScreenBox.svelte";
-  import MediaPreview from "./MediaPreview.svelte";
+  import SaveFileIcon from "~icons/material-symbols/sim-card-download-rounded";
+  import { saveMediaItem } from "$lib/src/local/util/saveMediaItem";
 
   interface Props {
     mediaItem: MediaItem | null;
@@ -64,6 +63,13 @@
         icon: DeleteIcon,
         label: "Delete Item",
         onclick: () => (deleteConfirmationActive = true),
+      },
+      {
+        icon: SaveFileIcon,
+        label: "Save Copy",
+        onclick: () => {
+          if (mediaItem) saveMediaItem(mediaItem);
+        },
       },
     ]}
     onclose={() => (mediaItemMenuCoords = null)}

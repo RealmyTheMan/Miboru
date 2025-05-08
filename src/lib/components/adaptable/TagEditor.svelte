@@ -29,7 +29,9 @@
   let inputContentWidth: number = $state(0);
 
   let tags: string[] = $state(
-    initialValue?.map((i) => i.trim().toLowerCase()) || [],
+    initialValue?.map((i) =>
+      i.includes(":") ? i.trim() : i.trim().toLowerCase(),
+    ) || [],
   );
 
   onMount(() => {
@@ -47,7 +49,9 @@
   function onAddTagSignal() {
     if (!inputElement) return; // never
 
-    const tagName = inputElement.value.trim().toLowerCase();
+    let tagName = inputElement.value.trim();
+    if (!tagName.includes(":")) tagName = tagName.toLowerCase();
+
     if (tagName.length !== 0 && !tags.includes(tagName)) {
       tags.push(tagName);
       onedit(tagName, null, tags);
@@ -71,7 +75,10 @@
       if (removedItem) onedit(null, removedItem, tags);
     }
 
-    if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(e.key)) {
+    if (
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(e.key) &&
+      !inputElement.value.includes(":")
+    ) {
       e.preventDefault();
       updateInput(e.key.toLowerCase());
     } else if (
