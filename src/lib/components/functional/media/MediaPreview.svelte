@@ -64,9 +64,15 @@
     --plyr-color-main: var(--color-accent-red);
   }
 
-  .ls-plyr :global(video) {
-    width: 100%;
+  .ls-plyr media-player {
     height: 100%;
+    width: 100%;
+    aspect-ratio: unset;
+  }
+
+  .ls-plyr :global(video) {
+    height: 100%;
+    width: 100%;
   }
 
   .ls-plyr :global(media-fullscreen-button) {
