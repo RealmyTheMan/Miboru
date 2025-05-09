@@ -19,10 +19,16 @@ export async function findMediaOnMachine(
 ): Promise<MediaFindResponse> {
   const db = await openDb();
 
-  const tags = params.keywords.filter((i) => !i.includes(":"));
+  const POSSIBLE_FILTERS = ["order", "id", "title", "type"];
+
+  const tags = params.keywords.filter(
+    (i) => !POSSIBLE_FILTERS.includes(i.split(":")[0]),
+  );
   const filters: Map<string, string> = new Map(
     params.keywords
-      .filter((i) => i.includes(":"))
+      .filter(
+        (i) => i.includes(":") && POSSIBLE_FILTERS.includes(i.split(":")[0]),
+      )
       .map(
         (i) =>
           i
