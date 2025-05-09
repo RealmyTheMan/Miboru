@@ -14,6 +14,7 @@
   import ContextMenu from "$lib/components/adaptable/ContextMenu.svelte";
   import ExpandBox from "$lib/components/adaptable/ExpandBox.svelte";
   import { page } from "$app/state";
+  import Logo from "$lib/components/visual/Logo.svelte";
 
   let { children } = $props();
 
@@ -35,11 +36,9 @@
   <header
     class="relative grid h-16 grid-cols-[auto_1fr_auto] items-center justify-between gap-2 px-2"
   >
-    <div class="px-2">
-      <a class="ls-miboru font-display text-2xl font-semibold" href="/gallery">
-        miboru<span class="text-accent-red">!</span><span
-          class="text-accent-pink">!</span
-        ><span class="text-accent-purple">!</span>
+    <div class="h-full px-2">
+      <a href="/gallery" class="flex h-full w-28">
+        <Logo />
       </a>
     </div>
 
