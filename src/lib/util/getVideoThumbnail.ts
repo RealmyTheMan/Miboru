@@ -1,6 +1,5 @@
 export async function getVideoThumbnail(
   videoUrl: string,
-  timeInSeconds = 1,
 ): Promise<Blob | null> {
   return new Promise((resolve, reject) => {
     const video = document.createElement("video");
@@ -12,17 +11,16 @@ export async function getVideoThumbnail(
     const onLoadedData = () => {
       video.removeEventListener("loadeddata", onLoadedData);
 
-      const seekTime = Math.min(timeInSeconds, video.duration);
-      video.currentTime = seekTime;
+      video.currentTime = Math.floor(Math.random() * video.duration);
     };
     video.addEventListener("loadeddata", onLoadedData);
 
     video.addEventListener("seeked", () => {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
+      try {
         const ctx = canvas.getContext("2d");
         if (!ctx) return resolve(null);
 
@@ -37,9 +35,10 @@ export async function getVideoThumbnail(
         );
       } catch {
         resolve(null);
-      } finally {
-        video.remove();
       }
+
+      video.remove();
+      canvas.remove();
     });
 
     video.addEventListener("error", (e) => {
