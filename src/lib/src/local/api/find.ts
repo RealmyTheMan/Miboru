@@ -23,7 +23,13 @@ export async function findMediaOnMachine(
   const filters: Map<string, string> = new Map(
     params.keywords
       .filter((i) => i.includes(":"))
-      .map((i) => i.split(":").slice(0, 2) as [string, string]),
+      .map(
+        (i) =>
+          i
+            .split(":")
+            .slice(0, 2)
+            .map((i) => i.trim()) as [string, string],
+      ),
   );
 
   const order =
@@ -31,68 +37,34 @@ export async function findMediaOnMachine(
       ? "createdAt ASC"
       : "createdAt DESC";
 
-  const filterList: { whereTemplate: string; value: string | null }[] = [
-    { whereTemplate: "1 = 1", value: null },
-    ...(filters.get("id")
-      ? [{ whereTemplate: "m.id = ?", value: filters.get("id") as string }]
-      : []),
-    ...(filters.get("title")
-      ? [
-          {
-            whereTemplate: "m.title = ?",
-            value: filters.get("title") as string,
-          },
-        ]
-      : []),
-    ...(filters.get("type")
-      ? [
-          {
-            whereTemplate: "m.type = ?",
-            value: filters.get("type") as string,
-          },
-        ]
-      : []),
-  ];
+  const filterList = getFilterList(filters);
 
   const filterWhereString = filterList
     .map((i) => i.whereTemplate)
     .join(" AND ");
   const filterEscapes = filterList
-    .map((i) => i.value)
+    .flatMap((i) => i.value)
     .filter((i) => i !== null);
 
-  let items: DbFile[] = [];
-
-  if (tags.length !== 0) {
-    items = await db.select(
-      `SELECT m.*
+  const items: DbFile[] = await db.select(
+    `SELECT m.*
       FROM media m
-      JOIN media_tags mt ON m.id = mt.media_id
-      JOIN tags t ON t.id = mt.tag_id
-      WHERE t.name IN (${tags.map(() => "?").join(", ")})
-      AND ${filterWhereString}
+      LEFT JOIN media_tags mt ON m.id = mt.media_id
+      LEFT JOIN tags t ON t.id = mt.tag_id
+      WHERE ${tags.length !== 0 ? `t.name IN (${tags.map(() => "?").join(", ")}) AND` : ""}
+      ${filterWhereString}
       GROUP BY m.id
-      HAVING COUNT(DISTINCT t.name) = ?
+      ${tags.length !== 0 ? "HAVING COUNT(DISTINCT t.name) = ?" : ""}
       ORDER BY ${order}
       LIMIT ? OFFSET ?`,
-      [
-        ...tags,
-        ...filterEscapes,
-        tags.length,
-        params.limit,
-        params.page * params.limit,
-      ],
-    );
-  } else {
-    items = await db.select(
-      `SELECT m.*
-      FROM media m
-      WHERE ${filterWhereString}
-      ORDER BY ${order}
-      LIMIT ? OFFSET ?`,
-      [...filterEscapes, params.limit, params.page * params.limit],
-    );
-  }
+    [
+      ...(tags.length !== 0 ? tags : []),
+      ...filterEscapes,
+      ...(tags.length !== 0 ? [tags.length] : []),
+      params.limit,
+      params.page * params.limit,
+    ],
+  );
 
   const appDataPath = await appDataDir();
   const mediaItems: MediaItem[] = [];
@@ -136,4 +108,31 @@ async function getMediaTags(id: string) {
   );
 
   return items.map((i) => i.name);
+}
+
+function getFilterList(filters: Map<string, string>) {
+  const filterList: {
+    whereTemplate: string;
+    value: string | string[] | null;
+  }[] = [];
+
+  if (filters.get("id"))
+    filterList.push({
+      whereTemplate: "m.id = ?",
+      value: filters.get("id") as string,
+    });
+  if (filters.get("title"))
+    filterList.push({
+      whereTemplate: "m.title = ?",
+      value: filters.get("title") as string,
+    });
+  if (filters.get("type"))
+    filterList.push({
+      whereTemplate: "m.type = ?",
+      value: filters.get("type") as string,
+    });
+  if (filterList.length === 0)
+    filterList.push({ whereTemplate: "1 = 1", value: null });
+
+  return filterList;
 }

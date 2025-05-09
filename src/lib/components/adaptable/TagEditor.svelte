@@ -28,11 +28,7 @@
   let value = $state(placeholder);
   let inputContentWidth: number = $state(0);
 
-  let tags: string[] = $state(
-    initialValue?.map((i) =>
-      i.includes(":") ? i.trim() : i.trim().toLowerCase(),
-    ) || [],
-  );
+  let tags: string[] = $state(initialValue?.map((i) => i.trim()) || []);
 
   onMount(() => {
     setTimeout(() => {
@@ -49,8 +45,7 @@
   function onAddTagSignal() {
     if (!inputElement) return; // never
 
-    let tagName = inputElement.value.trim();
-    if (!tagName.includes(":")) tagName = tagName.toLowerCase();
+    const tagName = inputElement.value.trim();
 
     if (tagName.length !== 0 && !tags.includes(tagName)) {
       tags.push(tagName);
@@ -73,14 +68,6 @@
     } else if (e.key === "Backspace" && inputElement.value === "") {
       const removedItem = tags.pop();
       if (removedItem) onedit(null, removedItem, tags);
-    }
-
-    if (
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(e.key) &&
-      !inputElement.value.includes(":")
-    ) {
-      e.preventDefault();
-      updateInput(e.key.toLowerCase());
     } else if (
       e.key === " " &&
       (inputElement.value.trim() === "" || inputElement.value.endsWith(" "))
@@ -124,6 +111,10 @@
       style="width:calc({inputContentWidth}px + 1.5rem)"
       aria-label="Input for entering tags"
       maxlength="56"
+      autocapitalize="off"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
       oninput={() => updateInput()}
       onkeydown={onKeyDown}
       bind:this={inputElement}
