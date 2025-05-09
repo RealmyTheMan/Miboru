@@ -22,7 +22,7 @@
 
 <ImageScreenBox src={item.src} {alt} bind:active={imageScreenBoxActive} />
 
-<div class="h-full bg-black">
+<div class="h-full overflow-hidden bg-black">
   {#if type === "image"}
     <button
       class="h-full w-full cursor-zoom-in"
@@ -32,8 +32,19 @@
       <ImageDemo src={item.src} {alt} />
     </button>
   {:else if type === "video"}
-    <div class="ls-plyr flex h-full items-center justify-center">
-      <media-player title={alt}>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="ls-plyr flex h-full items-center justify-center"
+      onclick={(e) => {
+        const target = e.target as HTMLVideoElement;
+        if (target.tagName === "VIDEO") {
+          if (target.paused) target.play();
+          else target.pause();
+        }
+      }}
+    >
+      <media-player title={alt} autoplay={true}>
         <media-provider>
           <source src={item.src} type={item.type} />
         </media-provider>
