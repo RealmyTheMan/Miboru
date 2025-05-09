@@ -37,7 +37,7 @@
     class="relative grid h-16 grid-cols-[auto_1fr_auto] items-center justify-between gap-2 px-2"
   >
     <div class="h-full px-2">
-      <a href="/gallery" class="flex h-full w-28">
+      <a href="/gallery" class="flex h-full w-26">
         <Logo />
       </a>
     </div>
