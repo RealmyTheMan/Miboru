@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Miboru",
-  "version": "0.1.0",
-  "identifier": "net.realmy.miboru",
+  "version": "0.0.2",
+  "identifier": "com.miboru",
   "build": {
     "frontendDist": "../build",
     "devUrl": "http://localhost:5173",
