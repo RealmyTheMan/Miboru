@@ -13,10 +13,15 @@
   let typeMapItem = $derived(typeMap[item.type.split("/")[0]] || null);
 </script>
 
-{#if item.thumbnailSrc}
-  <ImageDemo src={item.thumbnailSrc} />
-{:else}
-  <div class="relative h-full w-full">
+<div class="relative h-full w-full">
+  {#if item.thumbnailSrc}
+    <ImageDemo src={item.thumbnailSrc} />
+    {#if typeMapItem}
+      <div class="absolute right-3 bottom-3 z-10 text-xl text-white">
+        <typeMapItem.icon />
+      </div>
+    {/if}
+  {:else}
     <div
       class="absolute top-1/2 left-1/2 z-1 -translate-1/2 text-5xl"
       style="color:var(--color-accent-{typeMapItem?.color || 'none'}, #FFF)"
@@ -28,5 +33,5 @@
       style="background-color:var(--color-accent-{typeMapItem?.color ||
         'none'}, #FFF)"
     ></div>
-  </div>
-{/if}
+  {/if}
+</div>
