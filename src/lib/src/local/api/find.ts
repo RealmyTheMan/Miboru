@@ -19,15 +19,15 @@ export async function findMediaOnMachine(
 ): Promise<MediaFindResponse> {
   const db = await openDb();
 
-  const POSSIBLE_FILTERS = ["order", "id", "title", "type"];
+  const POSSIBLE_MODIFIERS = ["sort", "order", "id", "title", "ext", "mime"];
 
   const tags = params.keywords.filter(
-    (i) => !POSSIBLE_FILTERS.includes(i.split(":")[0]),
+    (i) => !POSSIBLE_MODIFIERS.includes(i.split(":")[0]),
   );
-  const filters: Map<string, string> = new Map(
+  const modifiers: Map<string, string> = new Map(
     params.keywords
       .filter(
-        (i) => i.includes(":") && POSSIBLE_FILTERS.includes(i.split(":")[0]),
+        (i) => i.includes(":") && POSSIBLE_MODIFIERS.includes(i.split(":")[0]),
       )
       .map(
         (i) =>
@@ -38,17 +38,16 @@ export async function findMediaOnMachine(
       ),
   );
 
-  const order =
-    filters.get("order")?.replaceAll(" ", "_") === "date_asc"
+  const orderBy =
+    (modifiers.get("sort") || modifiers.get("order"))?.replaceAll(" ", "_") ===
+    "date_asc"
       ? "createdAt ASC"
       : "createdAt DESC";
 
-  const filterList = getFilterList(filters);
+  const modifierList = getModifierList(modifiers);
 
-  const filterWhereString = filterList
-    .map((i) => i.whereTemplate)
-    .join(" AND ");
-  const filterEscapes = filterList
+  const whereString = modifierList.map((i) => i.whereTemplate).join(" AND ");
+  const whereEscapes = modifierList
     .flatMap((i) => i.value)
     .filter((i) => i !== null);
 
@@ -58,14 +57,14 @@ export async function findMediaOnMachine(
       LEFT JOIN media_tags mt ON m.id = mt.media_id
       LEFT JOIN tags t ON t.id = mt.tag_id
       WHERE ${tags.length !== 0 ? `t.name IN (${tags.map(() => "?").join(", ")}) AND` : ""}
-      ${filterWhereString}
+      ${whereString}
       GROUP BY m.id
       ${tags.length !== 0 ? "HAVING COUNT(DISTINCT t.name) = ?" : ""}
-      ORDER BY ${order}
+      ORDER BY ${orderBy}
       LIMIT ? OFFSET ?`,
     [
       ...(tags.length !== 0 ? tags : []),
-      ...filterEscapes,
+      ...whereEscapes,
       ...(tags.length !== 0 ? [tags.length] : []),
       params.limit,
       params.page * params.limit,
@@ -116,7 +115,7 @@ async function getMediaTags(id: string) {
   return items.map((i) => i.name);
 }
 
-function getFilterList(filters: Map<string, string>) {
+function getModifierList(filters: Map<string, string>) {
   const filterList: {
     whereTemplate: string;
     value: string | string[] | null;
@@ -132,10 +131,16 @@ function getFilterList(filters: Map<string, string>) {
       whereTemplate: "m.title = ?",
       value: filters.get("title") as string,
     });
-  if (filters.get("type"))
+  if (filters.get("ext"))
+    filterList.push({
+      whereTemplate: "m.extension = ?",
+      value: filters.get("ext") as string,
+    });
+  if (filters.get("mime"))
+    // "mime" (modifier) = "type" (db)
     filterList.push({
       whereTemplate: "m.type = ?",
-      value: filters.get("type") as string,
+      value: filters.get("mime") as string,
     });
   if (filterList.length === 0)
     filterList.push({ whereTemplate: "1 = 1", value: null });
