@@ -42,14 +42,22 @@ export async function saveMediaToMachine(
     [
       id,
       params.file.type,
-      params.automaticTitle?.includes(".")
-        ? params.automaticTitle.split(".").splice(-1)[0].trim().toLowerCase() ||
-          null
-        : null,
+      getExtension(params.automaticTitle),
       params.file.size,
       params.automaticTitle,
     ],
   );
 
   return { id };
+}
+
+function getExtension(automaticTitle: string | null) {
+  const extension = automaticTitle?.includes(".")
+    ? automaticTitle.split(".").splice(-1)[0].trim().toLowerCase() || null
+    : null;
+
+  if (!extension) return null;
+  if (!/^[a-z0-9_-]+$/.test(extension)) return null;
+  if (extension === "jpeg") return "jpg";
+  return extension;
 }
