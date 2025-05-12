@@ -28,7 +28,7 @@ export async function findMediaOnMachine(
     .filter(
       (i) => !POSSIBLE_MODIFIERS.includes(i.split(":")[0]) && i.startsWith("-"),
     )
-    .map((i) => i.slice(1));
+    .map((i) => i.slice(1).trim());
   const modifiers: Map<string, string> = new Map(
     params.keywords
       .filter(
@@ -95,11 +95,12 @@ export async function findMediaOnMachine(
   const appDataPath = await appDataDir();
   const mediaItems: MediaItem[] = [];
   for (const item of items) {
-    const src = convertFileSrc(`${appDataPath}/_gallery/${item.id}/item`);
-    const thumbnail = (await exists(`_gallery/${item.id}/thumbnail.jpg`, {
+    const path = `gallery/${item.id.slice(0, 2)}/${item.id.slice(2, 4)}/${item.id}`;
+    const src = convertFileSrc(`${appDataPath}/${path}/item`);
+    const thumbnail = (await exists(`${path}/thumbnail.jpg`, {
       baseDir: BaseDirectory.AppData,
     }))
-      ? convertFileSrc(`${appDataPath}/_gallery/${item.id}/thumbnail.jpg`)
+      ? convertFileSrc(`${appDataPath}/${path}/thumbnail.jpg`)
       : null;
     mediaItems.push({
       id: item.id,

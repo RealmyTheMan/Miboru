@@ -1,8 +1,9 @@
 import { version } from "$app/environment";
 import { openDb } from "$lib/src/local/imports/db";
 import { openStore } from "$lib/src/local/imports/store";
-import { dbInit, dbMigrations } from "./db";
-import type { VersionString } from "./schema";
+import { dbInit, dbMigrations } from "$lib/src/local/update/db";
+import type { VersionString } from "$lib/src/local/update/schema";
+import { fsMigrations } from "./fs";
 
 export async function runUpdateMigrations() {
   const db = await openDb();
@@ -14,8 +15,12 @@ export async function runUpdateMigrations() {
     await dbInit(db, store);
     console.info("Ran initial migration.");
   } else {
-    const { migrationsRan } = await dbMigrations.run(oldVersion);
-    console.info("Ran migrations:", migrationsRan);
+    const { migrationsRan: dbMigrationsRan } =
+      await dbMigrations.run(oldVersion);
+    const { migrationsRan: fsMigrationsRan } =
+      await fsMigrations.run(oldVersion);
+    console.info("Ran DB migrations:", dbMigrationsRan);
+    console.info("Ran FS migrations:", fsMigrationsRan);
   }
 
   await store.set("appVersion", version);

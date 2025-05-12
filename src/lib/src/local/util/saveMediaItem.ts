@@ -16,6 +16,9 @@ export async function saveMediaItem(item: MediaItem) {
   });
 
   if (path) {
-    await copyFile(`${appDataPath}/_gallery/${item.id}/item`, path);
+    await copyFile(
+      `${appDataPath}/gallery/${item.id.slice(0, 2)}/${item.id.slice(2, 4)}/${item.id}/item`,
+      path,
+    );
   }
 }

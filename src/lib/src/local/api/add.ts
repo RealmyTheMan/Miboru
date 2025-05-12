@@ -12,26 +12,27 @@ export async function saveMediaToMachine(
   const db = await openDb();
 
   const id = mkid();
+  const path = `gallery/${id.slice(0, 2)}/${id.slice(2, 4)}/${id}`;
 
-  await mkdir(`_gallery/${id}`, {
+  await mkdir(path, {
     baseDir: BaseDirectory.AppData,
     recursive: true,
   });
 
   const bytes = new Uint8Array(await params.file.arrayBuffer());
 
-  await writeFile(`_gallery/${id}/item`, bytes, {
+  await writeFile(`${path}/item`, bytes, {
     baseDir: BaseDirectory.AppData,
   });
 
   if (params.file.type.startsWith("video/")) {
     const appDataPath = await appDataDir();
     const thumbnailBlob = await getVideoThumbnail(
-      convertFileSrc(`${appDataPath}/_gallery/${id}/item`),
+      convertFileSrc(`${appDataPath}/${path}/item`),
     );
     if (thumbnailBlob) {
       const thumbnailBytes = new Uint8Array(await thumbnailBlob.arrayBuffer());
-      await writeFile(`_gallery/${id}/thumbnail.jpg`, thumbnailBytes, {
+      await writeFile(`${path}/thumbnail.jpg`, thumbnailBytes, {
         baseDir: BaseDirectory.AppData,
       });
     }

@@ -19,10 +19,13 @@ export async function deleteMediaFromMachine(
   );
 
   await db.execute("DELETE FROM media WHERE id = ?", [params.id]);
-  await remove(`_gallery/${params.id}`, {
-    baseDir: BaseDirectory.AppData,
-    recursive: true,
-  });
+  await remove(
+    `gallery/${params.id.slice(0, 2)}/${params.id.slice(2, 4)}/${params.id}`,
+    {
+      baseDir: BaseDirectory.AppData,
+      recursive: true,
+    },
+  );
 
   return { id: params.id };
 }
