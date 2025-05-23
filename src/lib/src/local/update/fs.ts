@@ -1,4 +1,3 @@
-import { openDb } from "$lib/src/local/imports/db";
 import { MigrationSchema } from "$lib/src/local/update/schema";
 import {
   BaseDirectory,

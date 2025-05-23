@@ -13,7 +13,8 @@
     window.addEventListener(
       "keydown",
       (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === "p") e.preventDefault();
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "p")
+          e.preventDefault();
       },
       true,
     );

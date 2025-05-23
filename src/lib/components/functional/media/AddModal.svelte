@@ -5,6 +5,7 @@
   import { goto } from "$app/navigation";
   import clsx from "clsx";
   import Spinner from "$lib/components/adaptable/Spinner.svelte";
+  import { onMount } from "svelte";
 
   interface Props {
     active: boolean;
@@ -14,6 +15,25 @@
 
   let isDraggingOver = $state(false);
   let loading = $state(false);
+
+  const windowPasteEvent = (e: ClipboardEvent) => {
+    if (!active || !e.clipboardData?.items) return;
+
+    for (const item of e.clipboardData.items) {
+      if (item.kind !== "file") continue;
+
+      const file = item.getAsFile();
+      if (!file) continue;
+
+      handleFileUpload(file);
+      break;
+    }
+  };
+
+  onMount(() => {
+    window.addEventListener("paste", windowPasteEvent);
+    return () => window.removeEventListener("paste", windowPasteEvent);
+  });
 
   async function onClickUploader() {
     const input = document.createElement("input");
