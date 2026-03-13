@@ -21,15 +21,16 @@ export async function findMediaOnMachine(
 
   const POSSIBLE_MODIFIERS = ["sort", "order", "id", "title", "ext", "mime"];
 
-  const tags = params.keywords.filter(
+  let tags = params.keywords.filter(
     (i) => !POSSIBLE_MODIFIERS.includes(i.split(":")[0]) && !i.startsWith("-"),
   );
-  const excludeTags = params.keywords
+  let excludeTags = params.keywords
     .filter(
       (i) => !POSSIBLE_MODIFIERS.includes(i.split(":")[0]) && i.startsWith("-"),
     )
     .map((i) => i.slice(1).trim());
-  const modifiers: Map<string, string> = new Map(
+
+  let modifiers: Map<string, string> = new Map(
     params.keywords
       .filter(
         (i) => i.includes(":") && POSSIBLE_MODIFIERS.includes(i.split(":")[0]),
@@ -42,6 +43,16 @@ export async function findMediaOnMachine(
             .map((i) => i.trim()) as [string, string],
       ),
   );
+
+  if (modifiers.has("id")) {
+    tags = [];
+    excludeTags = [];
+    const idValue = modifiers.get("id") as string;
+    modifiers.clear();
+    modifiers.set("id", idValue);
+  } else if (!tags.includes("hidden") && !excludeTags.includes("hidden")) {
+    excludeTags.push("hidden");
+  }
 
   const orderBy =
     (modifiers.get("sort") || modifiers.get("order"))?.replaceAll(" ", "_") ===

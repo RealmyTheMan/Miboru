@@ -1,4 +1,4 @@
-import { BaseDirectory, create, mkdir, writeFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, mkdir, writeFile } from "@tauri-apps/plugin-fs";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { mkid } from "$lib/src/local/imports/mkid";
 import { openDb } from "$lib/src/local/imports/db";
