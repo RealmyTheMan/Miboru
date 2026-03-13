@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import BackspaceIcon from "~icons/material-symbols/backspace-rounded";
+  import HiddenIcon from "~icons/material-symbols/visibility-off-rounded";
 
   interface Props {
     initialValue?: string[] | null;
@@ -85,13 +86,19 @@
 >
   {#each tags as tag, idx}
     <button
-      class="bg-button flex h-[2em] cursor-pointer items-center justify-center rounded-full px-[0.75em] transition-all hover:opacity-85 active:opacity-65"
+      class={[
+        "bg-button flex h-[2em] cursor-pointer items-center justify-center gap-1 rounded-full px-[0.75em] transition-all hover:opacity-85 active:opacity-65",
+        {
+          "border-accent-purple border-2": tag === "hidden",
+        },
+      ]}
       onclick={() => {
         const [removedTag] = tags.splice(idx, 1);
         onedit(null, removedTag, tags);
       }}
     >
       <span class="text-[0.9em] font-semibold">{tag}</span>
+      {#if tag === "hidden"}<HiddenIcon class="text-sm" />{/if}
     </button>
   {/each}
 
